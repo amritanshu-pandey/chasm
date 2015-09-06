@@ -1,0 +1,51 @@
+from . import db, login_manager
+from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask.ext.login import UserMixin
+
+
+class User(db.Model, UserMixin):
+	__tablename__ = 'users'
+	id = db.Column(db.Integer, primary_key=True)
+	email = db.Column(db.String(64), nullable=False, unique=True, index=True)
+	username = db.Column(db.String(64), nullable=False, unique=True, index=True)
+	firstname = db.Column(db.String(100))
+	lastname = db.Column(db.String(100))
+	member_since = db.Column(db.DateTime(), default=datetime.utcnow())
+	isadmin = db.Column(db.Boolean)
+	password_hash = db.Column(db.String(200))
+	mobile = db.Column(db.String(20))
+	bio = db.Column(db.Text())
+	avatar_hash = db.Column(db.String(64))
+
+	@property
+	def password(self):
+		raise AttributeError('Password is not a readable attribute')
+
+	@password.setter
+	def password(self,password):
+		self.password_hash = generate_password_hash(password)
+
+	def verify_password(self, password):
+		return check_password_hash(self.password_hash, password)
+
+	def __repr__(self):
+		return '<Username: %s>' % self.username
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+	
+
+
+class Post(db.Model):
+	__tablename__='posts'
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(500), nullable=False, index=True)
+	body = db.Column(db.Text())
+	url = db.Column(db.String(200))
+	timestamp = db.Column(db.DateTime(), default=datetime.utcnow())
+
+	def __repr__(self):
+		return '< Post Title: %s>' % self.title

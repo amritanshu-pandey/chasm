@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Admin - Login{% endblock %}
+{% block page_content %}
+<div class="page-header">
+    <h1>Login</h1>
+</div>
+<div class="col-md-6">
+    {{ wtf.quick_form(form,form_type='horizontal') }}
+    <br>
+</div>
+{% endblock %}
