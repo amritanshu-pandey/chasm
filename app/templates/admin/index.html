@@ -5,4 +5,12 @@ Admin Console
 {% block page_content %}
 <div class="page-header">
 <h1>Welcome to the Admin Console</h1>
+</div>
+<div class="clearfix content-heading media">
+<img class="pull-left" src="{{ current_user.gravatar(size=120) }}">
+<span class="text-primary lead capitalize">{{ current_user.firstname }} {{ current_user.lastname }}</span><br>
+<span class="">{{ current_user.username }}</span><br>
+<span class=""><a href="mailto://{{ current_user.email }}">{{ current_user.email }}</a> </span><br>
+</div>
+</div>
 {% endblock %}

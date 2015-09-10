@@ -1,5 +1,5 @@
 #!venv/bin/python3
-import os
+import os, getpass
 from app import create_app
 from flask.ext.script import Manager
 from app import models, db
@@ -13,14 +13,14 @@ def version():
 	print("Version 0.1")
 
 @manager.command
-def adduser(email,username):
+def adduser(email,username, isadmin):
 	''' Add new tracked user of the application '''
-	pwd1 = input('Password: ') 
-	pwd2 = input('Confirm Password: ')
+	pwd1 = getpass.getpass('Password: ') 
+	pwd2 = getpass.getpass('Confirm Password: ')
 	if pwd1!=pwd2:
 		raise AttributeError("Password doesn't match")
 	else:
-		user = models.User(email=email, username=username, password=pwd1)
+		user = models.User(email=email, username=username, password=pwd1, isadmin=isadmin)
 		db.create_all()
 		print(user)
 		db.session.add(user)
