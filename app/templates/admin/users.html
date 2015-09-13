@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Create a new user{% endblock %}
+{% block page_content %}
+<div class="page-header">
+    <h2>Manage Users</h2>
+    <a href="{{url_for('admin.createUser')}}">Add new Users</a>
+</div>
+<!--<div class="col-lg-12">-->
+<div class="col-lg-10">
+<table class="table">
+    <thead>
+    <tr>
+    <td>User Name</td>
+    <td>Email</td>
+    <td>Name</td>
+    <td>Member since</td>
+    <td >Admin</td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.username }}</td>
+        <td><a href="mailto://{{user.email}}">{{user.email}}</a></td>
+        <td>{{ user.firstname | title}} {{ user.lastname | title}}</td>
+        <td>{{ moment(user.member_since).format('LLL') }}</td>
+        <td >{{ user.isadmin }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+    <!--</div>-->
+{% endblock %}

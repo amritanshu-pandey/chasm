@@ -1,26 +1,49 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
-from wtforms.validators import Required, Length, Email, EqualTo
+from wtforms.validators import DataRequired, Length, Email, EqualTo
 from wtforms import ValidationError
-from ..models import User
+from ..models import User, load_user
+from .routes import *
+from flask.ext.login import login_user, logout_user, login_required, current_user
+
 
 class LoginForm(Form):
-	email = StringField('Email', validators=[Required(), Email(), Length(1,64)])
-	password = PasswordField('Password', validators=[Required()])
+	email = StringField('Email', validators=[DataRequired(), Email(), Length(1,64)])
+	password = PasswordField('Password', validators=[DataRequired()])
 	remember_me = BooleanField('Remember me')
 	submit = SubmitField('Log In')
 
 
 class UserCreationForm(Form):
-	firstname = StringField('First name', validators=[Required(), Length(1,100)])
-	lastname = StringField('Last name', validators=[Required(), Length(1,100)])
-	nickname = StringField('Nickname', validators=[Required(), Length(1,64)])
-	email = StringField('Email', validators=[Required(), Email(), Length(1,64)])
-	password = PasswordField('Enter Password', validators=[Required()])
-	confirm_password = PasswordField('Confirm Password', validators=[Required(), EqualTo('password',message='Password must match')])
+	firstname = StringField('First name', validators=[DataRequired(), Length(1,100)])
+	lastname = StringField('Last name', validators=[DataRequired(), Length(1,100)])
+	nickname = StringField('Nickname', validators=[DataRequired(), Length(1,64)])
+	email = StringField('Email', validators=[DataRequired(), Email(), Length(1,64)])
+	password = PasswordField('Enter Password', validators=[DataRequired()])
+	confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password',message='Password must match')])
 	mobile = StringField('Mobile#')
 	bio = TextAreaField('Bio')
 	isadmin = BooleanField('Make this user an Administrator')
 	submit = SubmitField('Submit')
+
+class ProfileEditForm(Form):
+	firstname = StringField('First name', validators=[DataRequired(), Length(1,100)])
+	lastname = StringField('Last name', validators=[DataRequired(), Length(1,100)])
+	nickname = StringField('Nickname', validators=[DataRequired(), Length(1,64)])
+	email = StringField('Email', validators=[DataRequired(), Email(), Length(1,64)])
+	mobile = StringField('Mobile#')
+	bio = TextAreaField('Bio')
+	isadmin = BooleanField('Make this user an Administrator')
+	submit = SubmitField('Submit')
+	
+class CategoriesForm(Form):
+	name = StringField('Add new category', validators=[DataRequired(), Length(1,100)])
+	navigation = BooleanField('Visible in Navigation Bar')
+	submit = SubmitField('Add Category')
+
+class CategoryEditForm(Form):
+	name = StringField('Category Name', validators=[DataRequired(), Length(1,100)])
+	navigation = BooleanField('Visible in Navigation Bar')
+	submit = SubmitField('Save Category')
 
 
