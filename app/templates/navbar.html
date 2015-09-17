@@ -9,12 +9,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" style="color: white" href="{{ url_for('bp.index') }}">{{ brand or 'Chasm'}}</a>
+            <a class="navbar-brand" style="color: white" href="{{ url_for('bp.index') }}">{{ getconfigurations().branding or 'Chasm'}}</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a class="navb"  href="{{ url_for('bp.index') }}">Home</a></li>
-                <li><a href="{{ url_for('bp.index') }}">Information</a></li>
+                {% for category in navbar_categories() %}
+                <li><a class="navb"  href="{{ url_for('bp.index') }}">{{ category.name }}</a></li>
+                <!--<li><a href="{{ url_for('bp.index') }}">Information</a></li>-->
+                {% endfor %}
             </ul>
             {% if "/admin/" in request.path or current_user.is_authenticated() %}
 <ul class="nav navbar-nav navbar-right">

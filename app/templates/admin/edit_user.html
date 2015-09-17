@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Edit profile{% endblock %}
+{% block page_content %}
+<div class="page-header">
+    <h2>Enter the following details</h2>
+</div>
+<div class="col-md-8">
+    {{ wtf.quick_form(form,form_type='horizontal') }}
+    <br>
+</div>
+{% endblock %}

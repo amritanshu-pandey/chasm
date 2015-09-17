@@ -75,7 +75,14 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, index=True, unique=True)
     navigation = db.Column(db.Boolean, default=False)
-    posts = db.relationship('Post', backref='category', lazy='dynamic')
+    # posts = db.relationship('Post', backref='category', lazy='dynamic')
 
     def __repr__(self):
         return '< Category Name: %s>' % self.name
+
+class Config(db.Model):
+    __tablename__='configurations'
+    id = db.Column(db.Integer, primary_key=True)
+    version = db.Column(db.Integer, nullable=True)
+    subversion = db.Column(db.Integer, nullable=True)
+    branding = db.Column(db.String(500))

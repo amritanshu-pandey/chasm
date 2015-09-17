@@ -26,4 +26,21 @@ def create_app(config_name):
 	from .admin import admin as chasm_admin
 	app.register_blueprint(chasm_admin, url_prefix='/admin')
 
+	app.jinja_env.globals.update(navbar_categories=navbar_categories, getconfigurations=getconfigurations, getPosts = getPosts)
+
 	return app
+
+def navbar_categories():
+	from app import db, models
+	categories = models.Category.query.filter_by(navigation=True).all()
+	return(categories)
+
+def getconfigurations():
+	from app import db, models
+	configs = models.Config.query.first()
+	return(configs)
+
+def getPosts(id):
+	from app import db, models
+	posts = models.Post.query.filter_by(category_id=id).first()
+	return(posts)

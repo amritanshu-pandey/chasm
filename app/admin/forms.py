@@ -1,6 +1,6 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired, Length, Email, EqualTo
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, URL
 from wtforms import ValidationError
 from ..models import User, load_user
 from .routes import *
@@ -45,5 +45,22 @@ class CategoryEditForm(Form):
 	name = StringField('Category Name', validators=[DataRequired(), Length(1,100)])
 	navigation = BooleanField('Visible in Navigation Bar')
 	submit = SubmitField('Save Category')
+
+class UserEditForm(Form):
+	firstname = StringField('First name', validators=[DataRequired(), Length(1,100)])
+	lastname = StringField('Last name', validators=[DataRequired(), Length(1,100)])
+	nickname = StringField('Nickname', validators=[DataRequired(), Length(1,64)])
+	email = StringField('Email', validators=[DataRequired(), Email(), Length(1,64)])
+	mobile = StringField('Mobile#')
+	bio = TextAreaField('Bio')
+	isadmin = BooleanField('Make this user an Administrator')
+	submit = SubmitField('Submit')
+
+class PostEntryForm(Form):
+	title = StringField('Title', validators=[DataRequired(message='Please fill'), Length(1,500)])
+	body = TextAreaField('Body')
+	url = StringField('URL', validators=[DataRequired(), URL(), Length(1,200)])
+	category = SelectField('Category', coerce=int)
+	submit = SubmitField('Submit')
 
 

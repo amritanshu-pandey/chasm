@@ -1,7 +1,7 @@
 from flask import render_template, redirect, request, url_for, flash
 from . import admin, forms
 from flask.ext.login import login_user, logout_user, login_required, current_user
-from ..models import User, Category
+from ..models import User, Category, Post
 from app import db
 
 cuser = current_user
@@ -52,7 +52,7 @@ def createUser():
                 email=form.email.data,
                 firstname=form.firstname.data,
                 lastname=form.lastname.data,
-                username=form.nickname.data,
+                username=form.nickname.data.lower(),
                 mobile=form.mobile.data,
                 bio = form.bio.data,
                 password = form.password.data,
@@ -83,7 +83,7 @@ def editProfile():
             if User.query.filter_by(username=form.nickname.data).first() and form.nickname.data != current_user.username :
                 flash('Username already exists! Please enter an unique username')
                 return redirect(url_for('.editProfile'))
-            user.username = form.nickname.data
+            user.username = form.nickname.data.lower()
             user.mobile = form.mobile.data
             user.bio = form.bio.data
             user.isadmin = form.isadmin.data
@@ -100,9 +100,12 @@ def editProfile():
             form.isadmin.data = current_user.isadmin
     return render_template('admin/edit_profile.html',form=form)
 
+
 @admin.route('/categories', methods=['GET','POST'])
 @login_required
 def addCategory():
+    returnurl = request.args.get('returnurl')
+    print(returnurl)
     form = forms.CategoriesForm()
     if(not current_user.isadmin):
         flash('Only an admin can create new users')
@@ -119,9 +122,10 @@ def addCategory():
             db.session.add(category)
             db.session.commit()
             flash('Category added succesfully')
-            return redirect(url_for('admin.addCategory'))
+            # return redirect(url_for('admin.addCategory'))
+            return redirect(returnurl or redirect_url())
         categories = Category.query.all()
-    return render_template('admin/categories.html', form=form, categories = categories)
+    return render_template('admin/categories.html', form=form, categories = categories )
 
 @admin.route('/categories/<int:id>', methods=['GET','POST'])
 @login_required
@@ -157,6 +161,11 @@ def deleteCategory(id):
         flash('Only an admin can access this page')
         return redirect(url_for('bp.index'))
     else:
+        posts = Post.query.filter_by(category_id=id).all()
+        print(posts)
+        for post in posts:
+            post.category_id = None
+        db.session.commit()
         cat = Category.query.get(id)
         Category.query.filter_by(id=id).delete()
         db.session.commit()
@@ -171,9 +180,88 @@ def manageUsers():
         flash('Only an admin can access this page')
         return redirect(url_for('bp.index'))
     else:
-        users = User.query.all()
+        users = User.query.order_by(User.username).all()
     return render_template('admin/users.html', users = users)
 
 @admin.app_errorhandler(404)
 def err404(e):
     return render_template('404.html'),404
+
+@admin.route('/edit_user/<int:id>', methods=['GET','POST'])
+@login_required
+def editUser(id):
+    form = forms.UserEditForm()
+    if(not current_user.isadmin):
+        flash('Only an admin can create new users')
+        return redirect(url_for('bp.index'))
+    else:
+        user = User.query.filter_by(id=id).first()
+        if form.validate_on_submit():
+            user.firstname = form.firstname.data
+            user.lastname = form.lastname.data
+            if User.query.filter_by(email=form.email.data).first() and form.email.data != user.email:
+                flash('Email already exists! Please enter a unique email id')
+                return redirect(url_for('.editUser', id=user.id))
+            user.email = form.email.data
+            if User.query.filter_by(username=form.nickname.data).first() and form.nickname.data != user.username :
+                flash('Username already exists! Please enter a unique username')
+                return redirect(url_for('.editUser', id=user.id))
+            user.username = form.nickname.data
+            user.mobile = form.mobile.data
+            user.bio = form.bio.data
+            user.isadmin = form.isadmin.data
+            db.session.commit()
+            flash('User profile modified succesfully')
+            return redirect(url_for('.manageUsers'))
+        else:
+            form.firstname.data = user.firstname
+            form.lastname.data = user.lastname
+            form.nickname.data = user.username
+            form.email.data = user.email
+            form.mobile.data = user.mobile
+            form.bio.data = user.bio
+            form.isadmin.data = user.isadmin
+    return render_template('admin/edit_user.html',form=form)
+
+@admin.route('/users/delete/<int:id>', methods=['GET','POST'])
+@login_required
+def deleteUser(id):
+    if(not current_user.isadmin):
+        flash('Only an admin can access this page')
+        return redirect(url_for('bp.index'))
+    else:
+        user = User.query.get(id)
+        username = User.query.get(id).username
+        User.query.filter_by(id=id).delete()
+        db.session.commit()
+        flash('User '+username+' deleted')
+        return redirect(url_for('admin.manageUsers'))
+
+@admin.route('/write', methods=['GET','POST'])
+@login_required
+def createPost():
+    form = forms.PostEntryForm()
+    categories = Category.query.all()
+    form.category.choices=[(category.id, category.name) for category in categories]
+    if(not current_user.isadmin):
+        flash('Only an admin can create new users')
+        return redirect(url_for('bp.index'))
+    else:
+        if form.validate_on_submit():
+            post = Post(
+                title=form.title.data,
+                body=form.body.data,
+                url = form.url.data,
+                category_id = form.category.data,
+                user_id = current_user.id
+            )
+            db.session.add(post)
+            db.session.commit()
+            print('Post Added')
+            return redirect(url_for('admin.index'))
+        return render_template('admin/create_post.html',form=form)
+
+def redirect_url():
+    return request.args.get('next') or \
+           request.referrer or \
+           url_for('index')

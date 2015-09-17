@@ -23,9 +23,9 @@
     <tr>
         <td>{{ category.name }}</td>
         <td>{{ category.navigation }}</td>
-        <td><a href= "{{ url_for('admin.editCategory', id=category.id) }}">Edit this category</a></td>
-        <td><a data-toggle="modal" data-target="#myModal-{{category.id}}"
-               >Delete this category</a></td>
+        <td><a class="btn-sm btn-primary" href= "{{ url_for('admin.editCategory', id=category.id) }}">Edit</a></td>
+        <td><a class="btn-sm btn-danger" data-toggle="modal" data-target="#myModal-{{category.id}}"
+               >Delete</a></td>
         <!-- Modal -->
 <div id="myModal-{{category.id}}" class="modal fade" role="dialog">
   <div class="modal-dialog">
@@ -37,7 +37,13 @@
         <h4 class="modal-title text-danger">Warning</h4>
       </div>
       <div class="modal-body">
-        <p>This action will delete the category {{category.name }} permanently. Do you want to continue?</p>
+        <p>This action will delete the category {{category.name }} permanently.<br>
+          {% if getPosts(category.id) %}
+          There are posts which belong to this category. If you continue, posts will be moved to the default category.
+          <br>
+            {% endif %}
+          Do you want to continue ?
+          </p>
       </div>
       <div class="modal-footer">
         <a type="button" class="btn btn-danger" href="{{ url_for('admin.deleteCategory', id=category.id) }}">Delete</a>

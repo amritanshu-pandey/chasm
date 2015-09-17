@@ -1,0 +1,101 @@
+    {% extends "base.html" %}
+    {% import "bootstrap/wtf.html" as wtf %}
+
+    {% block title %}Create Post{% endblock %}
+    {% block page_content %}
+    <div class="page-header">
+        <h2>Enter the following details</h2>
+    </div>
+    <form action="{{url_for('.createPost')}}" method="post">
+    <div class="col-md-10">
+        <!--{{ wtf.quick_form(form,form_type='horizontal') }}-->
+        <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="col-md-1">
+           <label>{{form.title.label}}</label>
+                    </div>
+                <div class="col-md-7">
+                {{form.title(class='form-control', type='text', required=True)}}
+                </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            <div class="col-md-10">
+                <div class="col-md-1">
+           <label>{{form.body.label}}</label>
+                    </div>
+                <div class="col-md-7">
+                {{form.body(class='form-control input-xxlarge', rows='10')}}
+                </div>
+                </div>
+                </div>
+
+             <br>
+            <div class="row">
+            <div class="col-md-10">
+                <div class="col-md-1">
+           <label>{{form.url.label}}</label>
+                    </div>
+                <div class="col-md-7">
+                {{form.url(class='form-control', type='URL', Required=True)}}
+                </div>
+                </div>
+                </div>
+
+             <br>
+            <div class="row">
+            <div class="col-md-10">
+                <div class="col-md-1">
+           <label>{{form.category.label}}</label>
+                    </div>
+                <div class="col-md-7">
+                {{form.category(class='form-control')}}
+                </div>
+                <div class="col-md-2">
+                    <a class="btn btn-primary"
+                       data-toggle="modal" data-target="#myModal" >Create new category</a>
+                </div>
+                </div>
+                </div>
+
+
+                 <br>
+            <div class="row">
+            <div class="col-md-10">
+                <div class="col-md-1">
+
+                    </div>
+                <div class="col-md-2">
+                {{form.submit(class='form-control btn-success')}}
+                </div>
+                </div>
+                </div>
+
+
+
+            </div>
+        </div>
+        {{ form.csrf_token }}
+        </form>
+        <br>
+    </div>
+    <div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+        <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title text-danger">Warning</h4>
+      </div>
+      <div class="modal-body">
+        If you continue all the data entered on this page will be lost!
+      </div>
+      <div class="modal-footer">
+        <a type="button" class="btn btn-danger" href="{{url_for('.addCategory', returnurl=url_for('.createPost'))}}">Continue</a>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    {% endblock %}
