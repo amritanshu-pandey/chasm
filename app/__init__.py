@@ -7,6 +7,7 @@ from flask.ext.login import LoginManager
 from flask.ext.moment import Moment
 from flask.ext.pagedown import PageDown
 
+
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 moment = Moment()
@@ -30,7 +31,9 @@ def create_app(config_name):
 	from .admin import admin as chasm_admin
 	app.register_blueprint(chasm_admin, url_prefix='/admin')
 
-	app.jinja_env.globals.update(navbar_categories=navbar_categories, getconfigurations=getconfigurations, getPosts = getPosts, getCategories=getCategories)
+	app.jinja_env.globals.update(navbar_categories=navbar_categories,
+								 getconfigurations=getconfigurations, getPosts = getPosts,
+								 getCategories=getCategories, getPostCount=getPostCount)
 
 	return app
 
@@ -56,5 +59,15 @@ def getPosts(id=None):
 		return(posts)
 	else:
 		from app import db, models
-		posts = models.Post.query.filter_by(category_id=id).all()
+		posts = models.Post.query.filter_by(category_id=id).order_by(models.Post.timestamp.desc()).all()
+		return(posts)
+
+def getPostCount(id,count):
+	if id is None:
+		from app import db, models
+		posts = models.Post.query.count()
+		return(posts)
+	else:
+		from app import db, models
+		posts = models.Post.query.filter_by(category_id=id).count()
 		return(posts)

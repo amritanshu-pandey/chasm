@@ -4,6 +4,8 @@ from flask.ext.login import login_user, logout_user, login_required, current_use
 from ..models import User, Category, Post, Tag
 from app import db
 from datetime import datetime
+from sqlalchemy import desc
+from slugify import slugify
 
 cuser = current_user
 
@@ -253,7 +255,7 @@ def createPost():
                 title=form.title.data,
                 intro_text=form.intro_text.data,
                 body=form.body.data,
-                url = form.url.data,
+                url = slugify(form.title.data),
                 category_id = form.category.data,
                 user_id = current_user.id,
                 tag_id = form.tags.data,
@@ -311,6 +313,7 @@ def editPost(id):
             form.tags.data = post.tag_id
             form.url.data = post.url
             form.intro_text.data = post.intro_text
+            form.category.data = post.category_id
         return render_template('admin/edit_post.html',form=form, id=id)
 
 @admin.route('/posts')
@@ -320,7 +323,7 @@ def managePosts():
         flash('Only an admin can access this page')
         return redirect(url_for('bp.index'))
     else:
-        posts = Post.query.order_by(Post.timestamp).all()
+        posts = Post.query.order_by(Post.timestamp.desc()).all()
     return render_template('admin/posts.html', posts = posts, User = User)
 
 @admin.route('/posts/delete/<int:id>', methods=['GET','POST'])

@@ -79,6 +79,7 @@ class Category(db.Model):
     navigation = db.Column(db.Boolean, default=False)
     posts = db.relationship('Post', backref='category', lazy='dynamic')
 
+
     def __repr__(self):
         return '< Category Name: %s>' % self.name
 
@@ -88,9 +89,17 @@ class Config(db.Model):
     version = db.Column(db.Integer, nullable=True)
     subversion = db.Column(db.Integer, nullable=True)
     branding = db.Column(db.String(500))
+    count = db.Column(db.Integer)
 
 class Tag(db.Model):
     __tablename__='tags'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(1000), nullable=False)
     posts = db.Column(db.Integer, nullable=False)
+
+class Track(db.Model):
+    __tablename__="trackdata"
+    id=db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(100), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow())
+    category = db.Column(db.Integer)
