@@ -1,12 +1,12 @@
     {% extends "base.html" %}
     {% import "bootstrap/wtf.html" as wtf %}
 
-    {% block title %}Create Post{% endblock %}
+    {% block title %}Edit Post{% endblock %}
     {% block page_content %}
     <div class="page-header">
         <h2>Enter the following details</h2>
     </div>
-    <form action="{{url_for('.createPost')}}" method="post">
+    <form action="{{url_for('admin.editPost', id=id)}}" method="post">
     <div class="col-md-10">
         <!--{{ wtf.quick_form(form,form_type='horizontal') }}-->
         <div class="container">
@@ -21,7 +21,7 @@
                 </div>
             </div>
 
-               <br>
+            <br>
             <div class="row">
             <div class="col-md-10">
                 <div class="col-md-1">
@@ -95,10 +95,11 @@
                     </div>
                 <div class="col-md-2">
                 {{form.submit(class='form-control btn-success')}}
+                    <br>
                 </div>
                 </div>
                 </div>
-            <br>
+
 
 
             </div>
@@ -120,7 +121,7 @@
         If you continue all the data entered on this page will be lost!
       </div>
       <div class="modal-footer">
-        <a type="button" class="btn btn-danger" href="{{url_for('.addCategory', returnurl=url_for('.createPost'))}}">Continue</a>
+        <a type="button" class="btn btn-danger" href="{{url_for('.addCategory', id=id)}}">Continue</a>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>

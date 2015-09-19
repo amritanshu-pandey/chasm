@@ -1,8 +1,39 @@
 {% extends "base.html" %}
 {% block page_content %}
-<h1>Hello {% if current_user.is_authenticated() %}
-                {{ current_user.firstname or current_user.username | title }}
-                {% else %}
-                Guest
-                {% endif %}</h1>
+
+<div class="row">
+    <div id="main">
+        <div class="col-md-9 col-md-push-0">
+            <div class="post">
+            {% for post in getPosts() %}
+                <div class="post-loop">
+            <p class="date pull-right">
+                {{moment(post.timestamp).format('LL')}}
+            </p>
+            <h1 class="post-title">{{post.title}}</h1>
+            <div class="posted">Posted by
+                <span class="label label-primary" >{{User.query.filter_by(id=post.user_id).first().firstname | capitalize}}</span>
+            in category <span class="label label-danger">{{Category.query.filter_by(id=post.category_id).first().name}}</span>
+                    <span class="pull-right tags">Tags -&nbsp;
+                    {% for tags in post.tag_id.split(',') %}
+                    <span class="pull-right"><span class="label label-default">{{tags | title}}</span>&nbsp;</span>
+                    {% endfor %}
+                    </span>
+                <hr class="post-line">
+            </div>
+            <div class="post-body">
+                <p>{{post.intro_text | safe}}</p>
+            </div>
+            <div class="post-trailer">
+                <span class="pull-left"><a href="#">Read more ...</a> </span>
+                <span class="pull-right"><a href="#">Comments</a> </span>
+                </div>
+            <br>
+                </div>
+            {%endfor%}
+                </div>
+            <br>
+        </div>
+    </div>
+</div>
 {% endblock %}

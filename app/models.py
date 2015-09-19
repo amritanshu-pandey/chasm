@@ -61,11 +61,13 @@ class Post(db.Model):
     __tablename__='posts'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(500), nullable=False, index=True)
+    intro_text = db.Column(db.Text())
     body = db.Column(db.Text())
     url = db.Column(db.String(200))
     timestamp = db.Column(db.DateTime(), default=datetime.utcnow())
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    tag_id = db.Column(db.String(1000))
 
     def __repr__(self):
         return '< Post Title: %s>' % self.title
@@ -75,7 +77,7 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, index=True, unique=True)
     navigation = db.Column(db.Boolean, default=False)
-    # posts = db.relationship('Post', backref='category', lazy='dynamic')
+    posts = db.relationship('Post', backref='category', lazy='dynamic')
 
     def __repr__(self):
         return '< Category Name: %s>' % self.name
@@ -86,3 +88,9 @@ class Config(db.Model):
     version = db.Column(db.Integer, nullable=True)
     subversion = db.Column(db.Integer, nullable=True)
     branding = db.Column(db.String(500))
+
+class Tag(db.Model):
+    __tablename__='tags'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(1000), nullable=False)
+    posts = db.Column(db.Integer, nullable=False)

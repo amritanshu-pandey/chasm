@@ -19,7 +19,9 @@ Admin Console
 <div class="col-lg-4" style="padding: 20px">
     <span >Admin tasks</span><br>
 <span >   <a href="{{ url_for('admin.addCategory') }}">Manage Categories</a> </span><br>
-    <span >   <a href="{{ url_for('admin.manageUsers') }}">Manage Users</a> </span>
+    <span >   <a href="{{ url_for('admin.manageUsers') }}">Manage Users</a> </span><br>
+    <span >   <a href="{{ url_for('admin.createPost') }}">Write post</a> </span><br>
+    <span >   <a href="{{ url_for('admin.managePosts') }}">Manage posts</a> </span>
     </div>
     </div>
 {% endblock %}

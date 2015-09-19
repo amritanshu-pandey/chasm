@@ -1,8 +1,9 @@
 from flask import render_template, redirect, request, url_for, flash
 from . import admin, forms
 from flask.ext.login import login_user, logout_user, login_required, current_user
-from ..models import User, Category, Post
+from ..models import User, Category, Post, Tag
 from app import db
+from datetime import datetime
 
 cuser = current_user
 
@@ -250,18 +251,94 @@ def createPost():
         if form.validate_on_submit():
             post = Post(
                 title=form.title.data,
+                intro_text=form.intro_text.data,
                 body=form.body.data,
                 url = form.url.data,
                 category_id = form.category.data,
-                user_id = current_user.id
+                user_id = current_user.id,
+                tag_id = form.tags.data,
+                timestamp = datetime.utcnow()
             )
             db.session.add(post)
+            db.session.commit()
+            tags_list = form.tags.data.split(',')
+            print(tags_list)
+            for tag in tags_list:
+                tentry = Tag(
+                    name=tag.strip(),
+                    posts=post.id
+                )
+                db.session.add(tentry)
             db.session.commit()
             print('Post Added')
             return redirect(url_for('admin.index'))
         return render_template('admin/create_post.html',form=form)
 
+@admin.route('/editpost/<int:id>', methods=['GET','POST'])
+@login_required
+def editPost(id):
+    form = forms.PostEditForm()
+    categories = Category.query.all()
+    form.category.choices=[(category.id, category.name) for category in categories]
+    post = Post.query.filter_by(id=id).first()
+    if(not current_user.isadmin):
+        flash('Only an admin can create new users')
+        return redirect(url_for('bp.index'))
+    else:
+        if form.validate_on_submit():
+            post.url = form.url.data
+            post.title = form.title.data
+            post.intro_text = form.intro_text.data
+            post.body = form.body.data
+            post.category_id = form.category.data
+            post.tag_id = form.tags.data
+            db.session.commit()
+            tags_list = form.tags.data.split(',')
+            print(tags_list)
+            Tag.query.filter_by(posts=post.id).delete()
+            for tag in tags_list:
+                tentry = Tag(
+                    name=tag.strip(),
+                    posts=post.id
+                )
+                db.session.add(tentry)
+            db.session.commit()
+            print('Post modified')
+            return redirect(url_for('.managePosts'))
+        else:
+            form.title.data = post.title
+            form.body.data = post.body
+            form.tags.data = post.tag_id
+            form.url.data = post.url
+            form.intro_text.data = post.intro_text
+        return render_template('admin/edit_post.html',form=form, id=id)
+
+@admin.route('/posts')
+@login_required
+def managePosts():
+    if(not current_user.isadmin):
+        flash('Only an admin can access this page')
+        return redirect(url_for('bp.index'))
+    else:
+        posts = Post.query.order_by(Post.timestamp).all()
+    return render_template('admin/posts.html', posts = posts, User = User)
+
+@admin.route('/posts/delete/<int:id>', methods=['GET','POST'])
+@login_required
+def deletePost(id):
+    if(not current_user.isadmin):
+        flash('Only an admin can access this page')
+        return redirect(url_for('bp.index'))
+    else:
+        post = Post.query.get(id)
+        postTitle = Post.query.get(id).title
+        Post.query.filter_by(id=id).delete()
+        db.session.commit()
+        tags = Tag.query.filter_by(posts=id).delete()
+        db.session.commit()
+        flash('Post "'+postTitle+'" deleted')
+        return redirect(url_for('admin.managePosts'))
+
 def redirect_url():
     return request.args.get('next') or \
-           request.referrer or \
-           url_for('index')
+           url_for('.index')

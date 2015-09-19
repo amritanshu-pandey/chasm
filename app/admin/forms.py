@@ -5,7 +5,7 @@ from wtforms import ValidationError
 from ..models import User, load_user
 from .routes import *
 from flask.ext.login import login_user, logout_user, login_required, current_user
-
+from flask.ext.pagedown.fields import PageDownField
 
 class LoginForm(Form):
 	email = StringField('Email', validators=[DataRequired(), Email(), Length(1,64)])
@@ -58,9 +58,20 @@ class UserEditForm(Form):
 
 class PostEntryForm(Form):
 	title = StringField('Title', validators=[DataRequired(message='Please fill'), Length(1,500)])
-	body = TextAreaField('Body')
+	intro_text = PageDownField('Intro Text')
+	body = PageDownField('Body')
 	url = StringField('URL', validators=[DataRequired(), URL(), Length(1,200)])
 	category = SelectField('Category', coerce=int)
+	tags = StringField('Tags', validators=[Length(0,1000)])
+	submit = SubmitField('Submit')
+
+class PostEditForm(Form):
+	title = StringField('Title', validators=[DataRequired(message='Please fill'), Length(1,500)])
+	intro_text = PageDownField('Intro Text')
+	body = PageDownField('Body')
+	url = StringField('URL', validators=[DataRequired(), URL(), Length(1,200)])
+	category = SelectField('Category', coerce=int)
+	tags = StringField('Tags', validators=[Length(0,1000)])
 	submit = SubmitField('Submit')
 
 

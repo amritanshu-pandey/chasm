@@ -8,7 +8,8 @@ Chasm
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
 {{ moment.include_jquery() }}
-        {{ moment.include_moment() }}
+{{ moment.include_moment() }}
+{{ pagedown.html_head() }}
 {% endblock %}
 
 {% block navbar %}

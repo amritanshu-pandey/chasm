@@ -2,8 +2,10 @@ from flask import Flask
 from config import config
 from flask.ext.bootstrap import Bootstrap
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy import desc
 from flask.ext.login import LoginManager
 from flask.ext.moment import Moment
+from flask.ext.pagedown import PageDown
 
 bootstrap = Bootstrap()
 db = SQLAlchemy()
@@ -11,6 +13,7 @@ moment = Moment()
 login_manager = LoginManager()
 login_manager.session_protection='strong'
 login_manager.login_view='admin.login'
+pagedown = PageDown()
 
 def create_app(config_name):
 	app = Flask(__name__)
@@ -19,6 +22,7 @@ def create_app(config_name):
 	db.init_app(app)
 	login_manager.init_app(app)
 	moment.init_app(app)
+	pagedown.init_app(app)
 
 	from .bp import bp as chasm_blueprint
 	app.register_blueprint(chasm_blueprint)
@@ -40,7 +44,13 @@ def getconfigurations():
 	configs = models.Config.query.first()
 	return(configs)
 
-def getPosts(id):
-	from app import db, models
-	posts = models.Post.query.filter_by(category_id=id).first()
-	return(posts)
+
+def getPosts(id=None):
+	if id is None:
+		from app import db, models
+		posts = models.Post.query.order_by(models.Post.timestamp.desc()).all()
+		return(posts)
+	else:
+		from app import db, models
+		posts = models.Post.query.filter_by(category_id=id).first()
+		return(posts)
