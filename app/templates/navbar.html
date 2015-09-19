@@ -14,9 +14,17 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 {% for category in navbar_categories() %}
-                <li><a class="navb"  href="{{ url_for('bp.index') }}">{{ category.name }}</a></li>
+                <li><a class="navb"  href="{{ url_for('bp.index', catid=category.id) }}">{{ category.name }}</a></li>
                 <!--<li><a href="{{ url_for('bp.index') }}">Information</a></li>-->
                 {% endfor %}
+                <div class="btn-group pull-left btn-all-cat">
+    <button type="button" data-toggle="dropdown" class="btn btn-inverse dropdown-toggle">All Categories <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+        {% for category in getCategories().query.filter_by(navigation=False).all() %}
+        <li><a href="{{ url_for('bp.index', catid=category.id) }}">{{category.name | title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
             </ul>
             {% if "/admin/" in request.path or current_user.is_authenticated() %}
 <ul class="nav navbar-nav navbar-right">

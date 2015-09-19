@@ -30,7 +30,7 @@ def create_app(config_name):
 	from .admin import admin as chasm_admin
 	app.register_blueprint(chasm_admin, url_prefix='/admin')
 
-	app.jinja_env.globals.update(navbar_categories=navbar_categories, getconfigurations=getconfigurations, getPosts = getPosts)
+	app.jinja_env.globals.update(navbar_categories=navbar_categories, getconfigurations=getconfigurations, getPosts = getPosts, getCategories=getCategories)
 
 	return app
 
@@ -44,6 +44,10 @@ def getconfigurations():
 	configs = models.Config.query.first()
 	return(configs)
 
+def getCategories():
+	from app import db, models
+	return(models.Category)
+
 
 def getPosts(id=None):
 	if id is None:
@@ -52,5 +56,5 @@ def getPosts(id=None):
 		return(posts)
 	else:
 		from app import db, models
-		posts = models.Post.query.filter_by(category_id=id).first()
+		posts = models.Post.query.filter_by(category_id=id).all()
 		return(posts)

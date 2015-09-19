@@ -1,5 +1,5 @@
 body {
-background-color: #FFFFFF
+background-color: #FEFEFE;
 }
 
 .articles {
@@ -55,6 +55,8 @@ position: inline;
 
 .post-loop{
 margin-top: 55px;
+padding: 15px;
+background: #EFEFEF;
 }
 
 .post-line{
@@ -71,4 +73,8 @@ hr {
   border-width: 1px 0;
   color: #999999;
   margin: 15px 0;
+}
+
+.btn-all-cat{
+padding: 10px;
 }
