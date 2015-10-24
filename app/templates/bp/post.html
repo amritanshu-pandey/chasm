@@ -13,12 +13,16 @@
             <div class="posted">Posted by
                 <span class="label label-primary" >{{User.query.filter_by(id=post.user_id).first().firstname | capitalize}}</span>
             in category <span class="label label-danger">{{Category.query.filter_by(id=post.category_id).first().name}}</span>
-                    <span class="pull-right tags">Tags -&nbsp;
+                   <p>
+                    <br>
+                <span class="pull-left tags">Tags -&nbsp;
                     {% for tags in post.tag_id.split(',') %}
                     <span class="pull-right"><span class="label label-default">{{tags | title}}</span>&nbsp;</span>
                     {% endfor %}
                     </span>
-                <hr class="post-line">
+                <br>
+                    <hr class="post-line">
+                </p>
             </div>
             <div class="post-body">
                 <p>{{post.body | safe}}</p>
@@ -27,7 +31,6 @@
                 <!--<span class="pull-left"><a href="#">Read more ...</a> </span>-->
                 <!--<span class="pull-right"><a href="#">Comments</a> </span>-->
                 <!--</div>-->
-            <br>
                 </div>
                 </div>
             <br>

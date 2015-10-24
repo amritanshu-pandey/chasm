@@ -6,6 +6,8 @@ from sqlalchemy import desc
 from flask.ext.login import LoginManager
 from flask.ext.moment import Moment
 from flask.ext.pagedown import PageDown
+from flask.ext.migrate import Migrate, MigrateCommand
+
 
 
 bootstrap = Bootstrap()
@@ -24,6 +26,7 @@ def create_app(config_name):
 	login_manager.init_app(app)
 	moment.init_app(app)
 	pagedown.init_app(app)
+	migrate = Migrate(app, db)
 
 	from .bp import bp as chasm_blueprint
 	app.register_blueprint(chasm_blueprint)

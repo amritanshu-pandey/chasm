@@ -7,6 +7,7 @@ Chasm
 {% block head %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
+<script href="{{url_for('static', filename='jquery-2.1.4.min.js')}}"
 {{ moment.include_jquery() }}
 {{ moment.include_moment() }}
 {{ pagedown.html_head() }}

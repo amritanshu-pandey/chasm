@@ -1,11 +1,13 @@
-#!venv/bin/python3
 import os, getpass
 from app import create_app
 from flask.ext.script import Manager
 from app import models, db
+from flask.ext.migrate import Migrate, MigrateCommand
+
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
+manager.add_command('db',MigrateCommand)
 
 @manager.command
 def version():
@@ -15,7 +17,7 @@ def version():
 @manager.command
 def adduser(email,username, isadmin):
 	''' Add new tracked user of the application '''
-	pwd1 = getpass.getpass('Password: ') 
+	pwd1 = getpass.getpass('Password: ')
 	pwd2 = getpass.getpass('Confirm Password: ')
 	if pwd1!=pwd2:
 		raise AttributeError("Password doesn't match")

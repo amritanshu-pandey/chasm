@@ -8,7 +8,7 @@ class Config():
 class DevelopmentConfig(Config):
 	DEBUG = True
 	SECRET_KEY = os.environ.get('SECRET_KEY') or 'SECRET_KEY'
-	SQLALCHEMY_DATABASE_URI = "postgresql://chasmd:dev@localhost/chasm-devel"
+	SQLALCHEMY_DATABASE_URI = "postgresql://amritanshu:dev@localhost/chasm-devel"
 
 class TestingConfig(Config):
 	TESTING = True
