@@ -56,7 +56,6 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-
 class Post(db.Model):
     __tablename__='posts'
     id = db.Column(db.Integer, primary_key=True)
@@ -83,13 +82,6 @@ class Category(db.Model):
     def __repr__(self):
         return '< Category Name: %s>' % self.name
 
-class Config(db.Model):
-    __tablename__='configurations'
-    id = db.Column(db.Integer, primary_key=True)
-    version = db.Column(db.Integer, nullable=True)
-    subversion = db.Column(db.Integer, nullable=True)
-    branding = db.Column(db.String(500))
-    count = db.Column(db.Integer)
 
 class Tag(db.Model):
     __tablename__='tags'
@@ -103,3 +95,11 @@ class Track(db.Model):
     ip = db.Column(db.String(100), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow())
     category = db.Column(db.Integer)
+
+class Configs(db.Model):
+    __tablename__="chasm_config"
+    id = db.Column(db.Integer, primary_key=True)
+    parameter = db.Column(db.String, nullable=False)
+    value = db.Column(db.String)
+    description = db.Column(db.String(1000))
+    gui_visible = db.Column(db.Boolean)

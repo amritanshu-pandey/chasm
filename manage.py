@@ -3,6 +3,7 @@ from app import create_app
 from flask.ext.script import Manager
 from app import models, db
 from flask.ext.migrate import Migrate, MigrateCommand
+from app import getconfigurations
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -12,7 +13,7 @@ manager.add_command('db',MigrateCommand)
 @manager.command
 def version():
 	''' show the version number of the application'''
-	print("Version 0.1")
+	print("Version: ",getconfigurations('version').value+'.'+getconfigurations('subversion').value)
 
 @manager.command
 def adduser(email,username, isadmin):

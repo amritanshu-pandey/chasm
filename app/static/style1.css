@@ -2,6 +2,21 @@ body {
 background-color: #FEFEFE;
 }
 
+.span-url {
+color: #EEEEEE;
+}
+
+.category_banner {
+line-height: 140%;
+position: relative;
+top:-4px;
+color: #555;
+font-size: 200%;
+margin-top: 25px;
+margin-left: 15px;
+position: inline;
+}
+
 .articles {
 padding:15px;
 }
@@ -38,7 +53,7 @@ padding-bottom: 5px;
 .post-body p{
 font-size: 120%;
 margin-bottom: 10px;
-margin-top: 3px;
+margin-top: 15px;
 line-height: 150%;
 text-align: justify;
 }

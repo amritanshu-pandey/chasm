@@ -45,9 +45,9 @@ def navbar_categories():
 	categories = models.Category.query.filter_by(navigation=True).all()
 	return(categories)
 
-def getconfigurations():
+def getconfigurations(column):
 	from app import db, models
-	configs = models.Config.query.first()
+	configs = models.Configs.query.filter_by(parameter=column).first()
 	return(configs)
 
 def getCategories():
